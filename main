@@ -1,0 +1,358 @@
+import json
+import os
+from datetime import datetime
+
+FILE_NAME = "employees_db.json"
+
+
+# ===============================
+# UTILITY FUNCTIONS
+# ===============================
+
+def load_data():
+    if os.path.exists(FILE_NAME):
+        try:
+            with open(FILE_NAME, "r") as f:
+                return json.load(f)
+        except:
+            return []
+    return []
+
+
+def save_data(data):
+    with open(FILE_NAME, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+def generate_id(employees):
+    if not employees:
+        return 1
+    return max(emp["id"] for emp in employees) + 1
+
+
+def pause():
+    input("\nPress Enter to continue...")
+
+
+# ===============================
+# ADD EMPLOYEE
+# ===============================
+
+def add_employee(employees):
+    print("\n--- ADD EMPLOYEE ---")
+
+    emp = {}
+    emp["id"] = generate_id(employees)
+
+    emp["name"] = input("Enter Name: ").strip()
+    emp["age"] = int(input("Enter Age: "))
+    emp["gender"] = input("Enter Gender: ")
+    emp["department"] = input("Enter Department: ")
+    emp["position"] = input("Enter Position: ")
+    emp["salary"] = float(input("Enter Salary: "))
+    emp["date_joined"] = str(datetime.now().date())
+
+    employees.append(emp)
+    save_data(employees)
+
+    print("Employee Added Successfully!")
+
+
+# ===============================
+# VIEW EMPLOYEES
+# ===============================
+
+def view_employees(employees):
+    print("\n--- ALL EMPLOYEES ---")
+
+    if not employees:
+        print("No records found!")
+        return
+
+    for emp in employees:
+        print(emp)
+
+
+# ===============================
+# SEARCH EMPLOYEE BY ID
+# ===============================
+
+def search_employee(employees):
+    print("\n--- SEARCH EMPLOYEE ---")
+    eid = int(input("Enter Employee ID: "))
+
+    for emp in employees:
+        if emp["id"] == eid:
+            print("Employee Found:")
+            print(emp)
+            return
+
+    print("Employee Not Found!")
+
+
+# ===============================
+# SEARCH BY NAME
+# ===============================
+
+def search_by_name(employees):
+    print("\n--- SEARCH BY NAME ---")
+    name = input("Enter Name: ").lower()
+
+    found = False
+    for emp in employees:
+        if name in emp["name"].lower():
+            print(emp)
+            found = True
+
+    if not found:
+        print("No match found!")
+
+
+# ===============================
+# UPDATE EMPLOYEE
+# ===============================
+
+def update_employee(employees):
+    print("\n--- UPDATE EMPLOYEE ---")
+    eid = int(input("Enter Employee ID: "))
+
+    for emp in employees:
+        if emp["id"] == eid:
+
+            print("Leave blank if no change")
+
+            name = input("New Name: ")
+            age = input("New Age: ")
+            dept = input("New Department: ")
+            pos = input("New Position: ")
+            salary = input("New Salary: ")
+
+            if name:
+                emp["name"] = name
+            if age:
+                emp["age"] = int(age)
+            if dept:
+                emp["department"] = dept
+            if pos:
+                emp["position"] = pos
+            if salary:
+                emp["salary"] = float(salary)
+
+            save_data(employees)
+            print("Updated Successfully!")
+            return
+
+    print("Employee Not Found!")
+
+
+# ===============================
+# DELETE EMPLOYEE
+# ===============================
+
+def delete_employee(employees):
+    print("\n--- DELETE EMPLOYEE ---")
+    eid = int(input("Enter Employee ID: "))
+
+    for emp in employees:
+        if emp["id"] == eid:
+            employees.remove(emp)
+            save_data(employees)
+            print("Deleted Successfully!")
+            return
+
+    print("Employee Not Found!")
+
+
+# ===============================
+# SORTING FUNCTIONS
+# ===============================
+
+def sort_by_salary(employees):
+    print("\n--- SORT BY SALARY ---")
+    data = sorted(employees, key=lambda x: x["salary"], reverse=True)
+
+    for emp in data:
+        print(emp)
+
+
+def sort_by_name(employees):
+    print("\n--- SORT BY NAME ---")
+    data = sorted(employees, key=lambda x: x["name"].lower())
+
+    for emp in data:
+        print(emp)
+
+
+# ===============================
+# ANALYTICS
+# ===============================
+
+def total_employees(employees):
+    print("Total Employees:", len(employees))
+
+
+def average_salary(employees):
+    if not employees:
+        print("No data")
+        return
+
+    avg = sum(emp["salary"] for emp in employees) / len(employees)
+    print("Average Salary:", round(avg, 2))
+
+
+def highest_salary(employees):
+    if not employees:
+        return
+    print("Highest Salary Employee:", max(employees, key=lambda x: x["salary"]))
+
+
+def lowest_salary(employees):
+    if not employees:
+        return
+    print("Lowest Salary Employee:", min(employees, key=lambda x: x["salary"]))
+
+
+# ===============================
+# DEPARTMENT REPORT
+# ===============================
+
+def department_count(employees):
+    print("\n--- DEPARTMENT REPORT ---")
+
+    report = {}
+    for emp in employees:
+        dept = emp["department"]
+        report[dept] = report.get(dept, 0) + 1
+
+    for k, v in report.items():
+        print(k, ":", v)
+
+
+def filter_department(employees):
+    dept = input("Enter Department: ")
+
+    found = False
+    for emp in employees:
+        if emp["department"].lower() == dept.lower():
+            print(emp)
+            found = True
+
+    if not found:
+        print("No employees found")
+
+
+# ===============================
+# BONUS SYSTEM
+# ===============================
+
+def give_bonus(employees):
+    print("\n--- BONUS SYSTEM ---")
+
+    eid = int(input("Enter Employee ID: "))
+
+    for emp in employees:
+        if emp["id"] == eid:
+            bonus = float(input("Enter Bonus: "))
+            emp["salary"] += bonus
+            save_data(employees)
+
+            print("Bonus Added. New Salary:", emp["salary"])
+            return
+
+    print("Employee Not Found")
+
+
+# ===============================
+# REPORT GENERATION
+# ===============================
+
+def full_report(employees):
+    print("\n--- COMPANY REPORT ---")
+    print("Generated on:", datetime.now())
+
+    total_employees(employees)
+    average_salary(employees)
+    highest_salary(employees)
+    lowest_salary(employees)
+    department_count(employees)
+
+
+# ===============================
+# MENU SYSTEM
+# ===============================
+
+def menu():
+    print("\n==============================")
+    print(" EMPLOYEE MANAGEMENT SYSTEM")
+    print("==============================")
+    print("1. Add Employee")
+    print("2. View Employees")
+    print("3. Search by ID")
+    print("4. Search by Name")
+    print("5. Update Employee")
+    print("6. Delete Employee")
+    print("7. Sort by Salary")
+    print("8. Sort by Name")
+    print("9. Total Employees")
+    print("10. Average Salary")
+    print("11. Department Report")
+    print("12. Filter by Department")
+    print("13. Bonus System")
+    print("14. Full Report")
+    print("15. Exit")
+
+
+# ===============================
+# MAIN FUNCTION
+# ===============================
+
+def main():
+    employees = load_data()
+
+    while True:
+        menu()
+        choice = input("Enter choice: ")
+
+        if choice == "1":
+            add_employee(employees)
+        elif choice == "2":
+            view_employees(employees)
+        elif choice == "3":
+            search_employee(employees)
+        elif choice == "4":
+            search_by_name(employees)
+        elif choice == "5":
+            update_employee(employees)
+        elif choice == "6":
+            delete_employee(employees)
+        elif choice == "7":
+            sort_by_salary(employees)
+        elif choice == "8":
+            sort_by_name(employees)
+        elif choice == "9":
+            total_employees(employees)
+        elif choice == "10":
+            average_salary(employees)
+        elif choice == "11":
+            department_count(employees)
+        elif choice == "12":
+            filter_department(employees)
+        elif choice == "13":
+            give_bonus(employees)
+        elif choice == "14":
+            full_report(employees)
+        elif choice == "15":
+            print("Exiting System...")
+            break
+        else:
+            print("Invalid Choice!")
+
+        pause()
+
+
+# ===============================
+# RUN PROGRAM
+# ===============================
+
+if __name__ == "__main__":
+    main()
