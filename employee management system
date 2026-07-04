@@ -1,0 +1,88 @@
+# Employee Management System
+
+employees = []
+
+def add_employee():
+    emp = {}
+    emp['id'] = int(input("Enter Employee ID: "))
+    emp['name'] = input("Enter Name: ")
+    emp['age'] = int(input("Enter Age: "))
+    emp['department'] = input("Enter Department: ")
+    emp['salary'] = float(input("Enter Salary: "))
+    employees.append(emp)
+    print("Employee added successfully!\n")
+
+def view_employees():
+    if not employees:
+        print("No employees found!\n")
+        return
+    for emp in employees:
+        print(emp)
+    print()
+
+def search_employee():
+    eid = int(input("Enter Employee ID to search: "))
+    for emp in employees:
+        if emp['id'] == eid:
+            print("Employee Found:", emp, "\n")
+            return
+    print("Employee not found!\n")
+
+def update_employee():
+    eid = int(input("Enter Employee ID to update: "))
+    for emp in employees:
+        if emp['id'] == eid:
+            print("Leave blank if you don't want to change")
+            name = input("New Name: ")
+            age = input("New Age: ")
+            dept = input("New Department: ")
+            salary = input("New Salary: ")
+
+            if name:
+                emp['name'] = name
+            if age:
+                emp['age'] = int(age)
+            if dept:
+                emp['department'] = dept
+            if salary:
+                emp['salary'] = float(salary)
+
+            print("Employee updated successfully!\n")
+            return
+    print("Employee not found!\n")
+
+def delete_employee():
+    eid = int(input("Enter Employee ID to delete: "))
+    for emp in employees:
+        if emp['id'] == eid:
+            employees.remove(emp)
+            print("Employee deleted successfully!\n")
+            return
+    print("Employee not found!\n")
+
+while True:
+    print("=== Employee Management System ===")
+    print("1. Add Employee")
+    print("2. View Employees")
+    print("3. Search Employee")
+    print("4. Update Employee")
+    print("5. Delete Employee")
+    print("6. Exit")
+
+    choice = input("Enter choice: ")
+
+    if choice == '1':
+        add_employee()
+    elif choice == '2':
+        view_employees()
+    elif choice == '3':
+        search_employee()
+    elif choice == '4':
+        update_employee()
+    elif choice == '5':
+        delete_employee()
+    elif choice == '6':
+        print("Exiting program...")
+        break
+    else:
+        print("Invalid choice!\n")
