@@ -1,0 +1,10 @@
+def menu():
+    print("===== EMPLOYEE MANAGEMENT SYSTEM =====")
+    print("1. Add Employee")
+    print("2. View Employees")
+    print("3. Search Employee")
+    print("4. Update Employee")
+    print("5. Delete Employee")
+    print("6. Sort by Salary")
+    print("7. Total Employees")
+    print("8. Exit")
