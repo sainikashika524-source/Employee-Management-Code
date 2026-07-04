@@ -1,0 +1,11 @@
+def search_by_name(employees):
+    name = input("Enter Name: ").lower()
+
+    found = False
+    for emp in employees:
+        if name in emp["name"].lower():
+            print(emp)
+            found = True
+
+    if not found:
+        print("No matching employee found!\n")
